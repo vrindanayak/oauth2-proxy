@@ -160,10 +160,10 @@ populate the `X-Forwarded-Groups` header to your upstream server with the `group
 Keycloak userinfo endpoint response.
 
 The group management in keycloak is using a tree. If you create a group named admin in keycloak (Step 4)
-you should define the 'keycloak-group' value to /admin. Else, if 'User Realm Role'  mapper type was created 
-ensure 'keycloak-group' is set to <user-role>.
+you should define the 'keycloak-group' value to /admin. Else, if `User Realm Role`  mapper type was created 
+`--keycloak-group` or `--allowed-group` option is not required.
 
-Ensure the 'cookie-secret' is set and is 16, 24, or 32 bytes long.
+Ensure the `--cookie-secret` is set and is 16, 24, or 32 bytes long.
 
 ### GitLab Auth Provider
 
