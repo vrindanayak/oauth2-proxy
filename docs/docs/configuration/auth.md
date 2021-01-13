@@ -131,9 +131,11 @@ If you are using GitHub enterprise, make sure you set the following to the appro
 
 1.  Create new client in your Keycloak with **Access Type** 'confidental' and **Valid Redirect URIs** 'https://internal.yourcompany.com/oauth2/callback'
 2.  Take note of the Secret in the credential tab of the client
-3.  Create a mapper with **Mapper Type** 'Group Membership' and **Token Claim Name** 'groups'.
+3.  Create a mapper with **Mapper Type** 'Group Membership' and **Token Claim Name** 'groups'. Alternatively, one may create a mapper with **Mapper Type** 'User Realm Role' and **Token Claim Name** '<user-role>'
+4.  Optionally, create a group in **Groups**. This step is not required if 'User Realm Role' mapper was created above.
+5.  Ensure some (dummy) email is set to user(s) which shall be authorized access. Also, if the group was created in Step 4, ensure that user(s) have joined this created group (Users -> Groups tab -> Join <user_group> in Available Groups); else if 'User Realm Role' mapper was created in Step 3, ensure that the <user-role> is created in 'Roles' and this is assigned to the user (Users -> Role Mappings tab)
 
-Make sure you set the following to the appropriate url:
+Make sure you set the following to the appropriate values:
 
     --provider=keycloak
     --client-id=<client you have created>
@@ -142,6 +144,11 @@ Make sure you set the following to the appropriate url:
     --redeem-url="http(s)://<keycloak host>/auth/realms/<your realm>/protocol/openid-connect/token"
     --profile-url="http(s)://<keycloak host>/auth/realms/<your realm>/protocol/openid-connect/userinfo"
     --validate-url="http(s)://<keycloak host>/auth/realms/<your realm>/protocol/openid-connect/userinfo"
+    --redirect-url="https://internal.yourcompany.com/oauth2/callback"
+    --upstream="http(s)://internal.yourcompany.com"
+    --email-domains="*"
+    --scope=openid
+    --cookie-secret=<some-(base64 encoded)-value>
     --keycloak-group=<first_allowed_user_group>
     --keycloak-group=<second_allowed_user_group>
     
@@ -152,8 +159,11 @@ If these are unset but a `groups` mapper is set up above in step (3), the provid
 populate the `X-Forwarded-Groups` header to your upstream server with the `groups` data in the
 Keycloak userinfo endpoint response.
 
-The group management in keycloak is using a tree. If you create a group named admin in keycloak
-you should define the 'keycloak-group' value to /admin.
+The group management in keycloak is using a tree. If you create a group named admin in keycloak (Step 4)
+you should define the 'keycloak-group' value to /admin. Else, if 'User Realm Role'  mapper type was created 
+ensure 'keycloak-group' is set to <user-role>.
+
+Ensure the 'cookie-secret' is set and is 16, 24, or 32 bytes long.
 
 ### GitLab Auth Provider
 
